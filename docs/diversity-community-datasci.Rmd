@@ -1,7 +1,7 @@
 ---
 title: "(Gender) Diversity and Building Community in Data Science"
 author: "Jenine K. Harris"
-date: "Washington University in St. Louis"
+date: "R-Ladies St. Louis | Washington University in St. Louis"
 output: slidy_presentation
 ---
 
@@ -111,10 +111,10 @@ perc.comp.math <- data.frame(perc.f.r.ds, perc.ds.r.f, Year, Sex)
 library(plyr)
 rec.satis <- function(x){
   return(revalue(x,
-          c("1" = "Very satisfied",
-            "2" = "Somewhat satisfied",
-            "3" = "Somewhat dissatisfied",
-            "4" = "Very dissatisfied",
+          c("1" = "Very\nsatisfied",
+            "2" = "Somewhat\nsatisfied",
+            "3" = "Somewhat\ndissatisfied",
+            "4" = "Very\ndissatisfied",
             "L" = NA)))
 }
 
@@ -134,10 +134,68 @@ stem2017$satis.salary <- rec.satis(stem2017$satsal)
 stem2017$satis.contrib <- rec.satis(stem2017$satsoc)
 
 ```
-## Disclaimer
 
-Data science is an emerging field, so research on "data science" per se is limited. The evidence in this presentation focuses mostly on the fields of computer science and math/statistics since they are (arguably) the foundational fields in data science. They are also the STEM fields (along with engineering) that have persistent gender disparities: 
+## Disclaimer 
+
+Data science is an emerging field, so research on "data science" is limited. Much of the evidence in this presentation focuses on the fields of computer science and math since they are (arguably) the foundational fields in data science. 
+
+## R-Ladies Global & R-Ladies St. Louis
+
+- R-Ladies Global 
+
+    + Mission of **promoting gender diversity in the R community**
+    + 138 cities in 44 countries with 39,676 members 
     
+- R-Ladies STL 
+
+    + hosts 4-5 Meetups a year 
+    + Hands-on workshops data science topics using R (e.g., intro, graphing, rcpp)
+    + About 20-25 attendees per Meetup
+    + Sponsored by Net Effects and Microsoft 
+
+<center>
+![](map.jpg)
+
+## So why do we need R-Ladies? 
+
+...because although women who choose data science are satisfied with their career: 
+
+```{r}
+library(gridExtra)
+library(ggplot2)
+stem2017.noNAsal <- subset(stem2017, gender == "F" & !is.na(satis.salary))
+
+salarygraph <- ggplot(data = subset(stem2017.noNAsal, !is.na(job.cat)), 
+       aes(x = job.cat, fill = reorder(satis.salary, desc(satis.salary)))) +
+  geom_bar(position = "fill") + 
+  theme_minimal() + xlab("Job type") + 
+  scale_fill_brewer(name = "", guide = guide_legend(reverse=TRUE,nrow=2,byrow=TRUE), 
+                    palette = "Purples") + theme(text = element_text(size=14),
+                                                 legend.position = "none") +
+  coord_flip() +
+  scale_y_continuous(labels = scales::percent) +
+  ggtitle("Salary satisfaction by job type (2017)")
+
+advancegraph <- ggplot(data = subset(stem2017.noNAsal, !is.na(job.cat)), 
+       aes(x = job.cat, fill = reorder(satis.advance, desc(satis.advance)))) +
+  geom_bar(position = "fill") + 
+  theme_minimal() + xlab("Job type") + ylab("")+
+  scale_fill_brewer(name = "", guide = guide_legend(reverse=TRUE,nrow=1,byrow=TRUE), 
+                    palette = "Purples") + theme(text = element_text(size=14),
+                                            legend.position = "none") +
+  coord_flip() +
+  ylab("Percent") + scale_y_continuous(labels = scales::percent) +
+ggtitle("Advancement satisfaction by job type (2017)")
+
+grid.arrange(salarygraph, advancegraph)
+```
+
+<center>
+![](legend.jpg)
+
+## Few women choose data science  
+
+<center><br>
 ```{r}
 library(ggplot2)
 ggplot(data = subset(stem2017, !is.na(job.cat)), 
@@ -145,13 +203,13 @@ ggplot(data = subset(stem2017, !is.na(job.cat)),
   geom_bar(aes(y = ..prop.., group = 1)) +
   theme_minimal() + ylab("Percent within job category") + xlab("Sex") +
    facet_wrap(~job.cat) + 
-  scale_fill_manual(values = c("#88398a","gray60","gray60","dodgerblue2","gray60")) +
-  scale_y_continuous(labels = scales::percent)+theme(legend.position="none") +
+  scale_fill_manual(values = c("deeppink","gray60","gray60","orange","gray60")) +
+  scale_y_continuous(labels = scales::percent)+theme(legend.position="none", text = element_text(size=16)) +
   ggtitle("College graduate field of employment (NSF, 2017).")
 
 ```
     
-## Percent of male and female college grads who are data scientists 
+## And the gap is getting worse 
 <br><BR>
 <center>
 ```{r}
@@ -163,11 +221,12 @@ ggplot(data = perc.comp.math,
   theme_minimal() + ylab("Percent") +
   ylim(0,20) + theme(text = element_text(size=16)) +
   scale_color_manual(values = c("#88398a","dodgerblue2")) +
-  guides(color = guide_legend(reverse = T)) 
+  guides(color = guide_legend(reverse = T)) +
+  ggtitle("Percent of male and female college grads with\na data science job.")
 ```
 
 
-## Percent of data scientists who are male and female
+## Or (at best) staying the same
 <br><br>
 <center>
 ```{r}
@@ -178,125 +237,72 @@ ggplot(data = perc.comp.math,
   theme_minimal() + ylab("Percent") + 
   ylim(0,100)+ theme(text = element_text(size=16)) +
   scale_color_manual(values = c("#88398a","dodgerblue2")) +
-  guides(color = guide_legend(reverse = T)) 
+  guides(color = guide_legend(reverse = T)) +
+  ggtitle("Percent of data scientists who are male\nand female.")
 
 ```
 
-
-## WTF? 
-Actual picture of me after making those graphs
-
-## WTF? 
-Actual picture of me after making those graphs
-
-<br><br>
-<center>
-![](cat.jpg){align="center"}
-
-## Women data scientists are satisfied with salary
-<br><BR>
-<center>
-```{r}
-stem2017.noNAsal <- subset(stem2017, gender == "F" & !is.na(satis.salary))
-
-ggplot(data = subset(stem2017.noNAsal, !is.na(job.cat)), 
-       aes(x = job.cat, fill = reorder(satis.salary, desc(satis.salary)))) +
-  geom_bar(position = "fill") + 
-  theme_minimal() + xlab("Job type") + 
-  scale_fill_brewer(name = "", guide = guide_legend(reverse=TRUE,nrow=2,byrow=TRUE), 
-                    palette = "Purples") + theme(text = element_text(size=12),
-                                            legend.position = "bottom") +
-  coord_flip() +
-  ylab("Percent") + scale_y_continuous(labels = scales::percent)
-```
-
-
-## Women data scientists are satisfied with opportunities for advancement  
-<br><BR>
-<center>
-```{r}
-stem2017.noNAadv <- subset(stem2017, gender == "F" & !is.na(satis.advance))
-
-ggplot(data = subset(stem2017.noNAsal, !is.na(job.cat)), 
-       aes(x = job.cat, fill = reorder(satis.advance, desc(satis.advance)))) +
-  geom_bar(position = "fill") + 
-  theme_minimal() + xlab("Job type") + 
-  scale_fill_brewer(name = "", guide = guide_legend(reverse=TRUE,nrow=2,byrow=TRUE), 
-                    palette = "Purples") + theme(text = element_text(size=12),
-                                            legend.position = "bottom") +
-  coord_flip() +
-  ylab("Percent") + scale_y_continuous(labels = scales::percent)
-```
-
-## Seriously then... 
-<br><BR>
-<center>
-![](picard-why.jpg)
-
-## Explanations in the scientific literature 
-
-- biological: natural ability in the field 
-- social-cultural: societal and cultural norms (e.g., stereotypes) 
-- structural: institutional barriers 
-
-## Biological: Males are innately better at math & computers (largely debunked)
-<br><Br>
-<center>
-![](brainsize.jpg){ width=750 }
-
-## Actual picture of me after reading this  
-
+## After graphing those data, first I was like...
 <br><br>
 <center>
 ![](disgust.png)
 
-## Social-cultural: Kids perceive "computer people" as male and nerds
+
+## Then I was like...
+<br><BR>
+<center>
+![](picard-why.jpg) 
+
+## Explanations in the scientific literature 
+<br>
+- biological: natural/innate ability  
+- social-cultural: societal and cultural norms (e.g., stereotypes) 
+- structural: institutional barriers 
+
+## Biological: Males are innately better at math & computers (debunked)
+<br><Br>
+<center>
+![](brainsize.jpg){ width=750 }
+
+## Biological: Seriously?
+<br><br>
+<center>
+![](plosone.jpg){ width=750 }
+
+## And again I was like...  
+<br><br>
+<center>
+![](disgust.png)
+
+## Social-cultural: Male and female students perceive "computer people" and math as male
 <BR><BR>
 <center>
-![](selfimage.jpg)
-
-## Social-cultural: Male students have more confidence with computers & math 
-
-<BR><BR>
-<center>
-![](confidence2.jpg)
+![](selfimage.jpg){ width=500 }&nbsp;&nbsp;&nbsp;&nbsp;
+![](stereotype.jpg){ width=500 }
 
 ## Social-cultural: Stereotype threat reduces math scores for female students
 
+- "When women perform math, unlike men, they risk being judged by the negative stereotype that women have weaker math ability. We call this predicament stereotype threat..." ~ Spencer et al., 1999
+
 <br><Br>
 <center>
-![](threat.jpg){ width=750 }
-
-
-## Social-cultural: My colleague identifies role models in statistics 
-<br><br>
-<center>
-![](statisticians.jpg){ width=750 }
-
-## Social-cultural: Women lack confidence in ability to do math
-
-<center>
-![](confidence.jpg){ width=750 }
-<br><br>
+![](threat.jpg){ width=650 }
 
 ## Structural: Elementary teachers believe boys are better than girls at math 
 <br><BR>
 <center>
 ![](elementary.jpg){ width=450 }
 
-## Structural: Companies hire males over females given same qualifications
-
-<br><BR>
-<center>
-![](hiring.jpg){ width=750 }
-
-## Structural: Women in STEM are more affected by the "family penalty" in the workplace 
-
+## Structural: Et tu, professor?
 <br><br>
 <center>
-![](children.jpg)
+![](statisticians.jpg){ width=750 }
 
-## ....and then there were few women in data science
+## Structural: Companies hire males over females given same qualifications
+<center>
+![](hiring.jpg){ width=600 }
+
+## ....and then there were fewer women in data science
 <br><br>
 <center>
 ![](fine.png)
@@ -306,13 +312,13 @@ ggplot(data = subset(stem2017.noNAsal, !is.na(job.cat)),
 <center>
 ![](hangcat.jpg)
 
-## We can be visible 
+## We can be visible (or help others be visible)
 <br>
 <center>
 ![](be-visible.jpg){ width=425 }&nbsp;&nbsp;&nbsp;&nbsp;
 ![](be-visible-2.jpg){ width=425 }
 
-## We can be and seek role models
+## We can be and seek role models (or connect others with role models)
 <br><br>
 <center>
 ![](be-role-models.jpg){ width=425 }&nbsp;&nbsp;&nbsp;&nbsp;
@@ -322,11 +328,6 @@ ggplot(data = subset(stem2017.noNAsal, !is.na(job.cat)),
 <br><br>
 <center>
 ![](teach-threats.jpg)
-
-## We can share successful strategies 
-<br><br>
-<center>
-![](strategy-salary.jpg){ width=400 }
 
 ## Basically, we can create a visible community of and for women in data science
 <br><br>
@@ -340,12 +341,12 @@ ggplot(data = subset(stem2017.noNAsal, !is.na(job.cat)),
     + Be visible (or assist others in being visible)
     + Teach about stereotype threat 
     + Use counter-stereotypes 
-    + Be a role model 
+    + Be/seek role models (or assist others in seeking role models) 
 
 <center>
 ![](githublaura3.jpg){ width=400 }
 
-## And we don't have to do it alone 
+## And we don't have to do it alone
 
 - Local groups specifically focused on / supporting gender diversity in data science:
 
@@ -357,6 +358,7 @@ ggplot(data = subset(stem2017.noNAsal, !is.na(job.cat)),
 
     + St. Louis R Users  
     + St. Louis Machine Learning & Data Science 
+    + 500 Women Scientists St. Louis 
 
 <center>
 ![](xiaoyan.jpg){ width=400 }
